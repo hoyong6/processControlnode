@@ -451,9 +451,10 @@ function Asteroid(pos, s) {
   if (pos) {
     this.pos = pos.copy();
   } else {
-    this.pos = createVector(random(width), random(height)); // 欧几里得创建向量 x， y
+    this.pos = createVector(random(width), random(height)); // 欧几里得创建向量 x， y，初始化向量的随机位置
   }
-  this.vel = p5.Vector.random2D(); // Make a new 2D unit vector from a random angle
+  console.log('this.pos--->', this.pos)
+  this.vel = p5.Vector.random2D(); // Make a new 2D unit vector from a random angle 创建2D 的矢量
   this.sides = floor(random(15, 30));
   if (s) {
     this.sides = floor(s * 0.5);
