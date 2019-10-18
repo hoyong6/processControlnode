@@ -438,7 +438,7 @@ function Debris(pos, vel) {
 }
 
 
-function generateDebris(pos, vel, n) {
+function generateDebris(pos, vel, n) { // 翻译说明是产生碎片，也就是爆炸产生碎片
   for (var i = 0; i < n; i++) {
     debris.push(new Debris(pos, vel));
   }
@@ -447,58 +447,57 @@ function generateDebris(pos, vel, n) {
 
 ///// ASTEROIDS 小行星函数
 
-function Asteroid(pos, s) {
+function Asteroid(pos, s) { // pos position 的缩写位置的意思，其实我还是好奇小行星如何画出来的，目前只是看到了加减增量
   if (pos) {
     this.pos = pos.copy();
   } else {
     this.pos = createVector(random(width), random(height)); // 欧几里得创建向量 x， y，初始化向量的随机位置
   }
-  console.log('this.pos--->', this.pos)
   this.vel = p5.Vector.random2D(); // Make a new 2D unit vector from a random angle 创建2D 的矢量
   this.sides = floor(random(15, 30));
   if (s) {
-    this.sides = floor(s * 0.5);
+    this.sides = floor(s * 0.5); // floor 函数映射于 Math.floor()
   } else {
-    this.sides = floor(random(15, 30));
+    this.sides = floor(random(15, 30)); // random返回一个15， 到30的随机数，具体详情查看api
   }
   this.rmin = 20;
   this.rmax = 40;
-  this.r = map(this.sides, 15, 30, this.rmin, this.rmax);
+  this.r = map(this.sides, 15, 30, this.rmin, this.rmax); // 从一个范围内映射一个数字去另一个范围，我猜它的大小范围限制在20 到 40，第四个参数是否开启边界的意思
   this.offset = [];
   for (var i = 0; i < this.sides; i++) {
     this.offset[i] = random(-5, 5); // alternative // -this.r/8, this.r/8
   }
-  this.angle = 0;
-  var increment = map(this.r, this.rmin, this.rmax, 0.1, 0.01);
+  this.angle = 0; // 角度，我猜是建曲边使用的
+  var increment = map(this.r, this.rmin, this.rmax, 0.1, 0.01); // 翻译是：增量，
   if (random() > 0.5) {
-    this.increment = increment * -1;
+    this.increment = increment * -1; // 增量可能出现为负数
   } else {
     this.increment = increment;
   }
 }
 
-Asteroid.prototype.explode = function() {
+Asteroid.prototype.explode = function() { // 小行星，爆炸
   //var debrisVel = p5.Vector.random2D().mult(random(0.5, 1.5));
-  var debrisVel = this.vel.copy();
-  var debrisNum = this.r * 5;
-  generateDebris(this.pos, debrisVel, debrisNum); // handeling ship explosion
+  var debrisVel = this.vel.copy(); // 未定义是不是全复制，对冲量进行了复制
+  var debrisNum = this.r * 5; // 爆炸的碎片数量
+  generateDebris(this.pos, debrisVel, debrisNum); // 三个参数 分别是位置，冲量，爆破数量  handeling ship explosion   翻译是手动使船爆炸？ 简称手摇船爆炸。。。哈哈哈
 }
 
-Asteroid.prototype.breakup = function() {
+Asteroid.prototype.breakup = function() { // 分手？ 其实是分解
   var newA = [];
-  if (this.sides > 5) {
+  if (this.sides > 5) { // 对于边大于5的，做了拆解 之后怎么用？在看。
     newA[0] = new Asteroid(this.pos, this.sides);
     newA[1] = new Asteroid(this.pos, this.sides);
   }
-  return newA; // returning the array with my new asteroids
+  return newA; // returning the array with my new asteroids 这是新的小行星啊
 }
 
-Asteroid.prototype.update = function() {
-  this.pos.add(this.vel);
-  this.angle += this.increment;
+Asteroid.prototype.update = function() { // 更新 这个位置的代码奇怪暂时在看
+  this.pos.add(this.vel); // 位置添加了增量
+  this.angle += this.increment;    // 角去加这个增量是什么玩意
 }
 
-Asteroid.prototype.render = function() {
+Asteroid.prototype.render = function() { // render 渲染函数
   push();
   translate(this.pos.x, this.pos.y);
   rotate(this.angle);
