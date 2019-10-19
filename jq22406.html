@@ -38,11 +38,11 @@ function setup() {
 }
 
 function draw() {
-  background(0);
-  for (var i = debris.length - 1; i >= 0; i--) {
+  background(0); // 首先画布的背景是黑色的
+  for (var i = debris.length - 1; i >= 0; i--) { // 碎片
     debris[i].update();
     debris[i].render();
-    if (debris[i].transparency <= 0) {
+    if (debris[i].transparency <= 0) { // 如果透明度小于1了就是从数组里面切掉了
       debris.splice(i, 1);
     }
   }
@@ -416,30 +416,31 @@ function generateEnergy(pos, vel) {
 }
 
 
-///// DEBRIS
+///// DEBRIS 碎片
 
 function Debris(pos, vel) {
-  this.pos = pos.copy();
-  this.vel = vel.copy();
-  this.vel.add(p5.Vector.random2D().mult(random(0.5, 1.5)));
-  this.transparency = random(200, 255);
+  this.pos = pos.copy(); // 复制位置
+  this.vel = vel.copy(); // 复制向量
+  this.vel.add(p5.Vector.random2D().mult(random(0.5, 1.5))); // 将X、Y和Z分量添加到向量，将一个向量添加到另一个向量，或将两个独立向量添加到一起。
+  //   将两个向量相加的方法的版本是一个静态方法，返回一个p5。向量，其他的直接作用于向量。有关更多上下文，请参见示例。在这一瞬间我看见了无数的添加的新的变量。
+  this.transparency = random(200, 255); // 透明度随机数，另外这里面讲一下，计划没有JavaScript对象的方法，好多数学方法都是它封装的映射。
 
-  this.update = function() {
-    this.pos.add(this.vel);
-    this.transparency -= 2;
+  this.update = function() { // 更新函数
+    this.pos.add(this.vel); // 增加新的向量
+    this.transparency -= 2; // 更新透明度
   }
 
-  this.render = function() {
-    if (this.transparency > 0) {
-      stroke(this.transparency);
-      point(this.pos.x, this.pos.y);
+  this.render = function() { // 渲染函数
+    if (this.transparency > 0) { // 如果透明度大于0
+      stroke(this.transparency); // 划线我还能理解
+      point(this.pos.x, this.pos.y); // 但是绘制点是什么意思
     }
   }
 }
 
 
 function generateDebris(pos, vel, n) { // 翻译说明是产生碎片，也就是爆炸产生碎片
-  for (var i = 0; i < n; i++) {
+  for (var i = 0; i < n; i++) { // 艺术就是爆炸然后产生新碎片的意思？
     debris.push(new Debris(pos, vel));
   }
 }
@@ -454,7 +455,7 @@ function Asteroid(pos, s) { // pos position 的缩写位置的意思，其实我
     this.pos = createVector(random(width), random(height)); // 欧几里得创建向量 x， y，初始化向量的随机位置
   }
   this.vel = p5.Vector.random2D(); // Make a new 2D unit vector from a random angle 创建2D 的矢量
-  this.sides = floor(random(15, 30));
+  this.sides = floor(random(15, 30));  // 随机数15 到 30 然后向下取整的一个整数
   if (s) {
     this.sides = floor(s * 0.5); // floor 函数映射于 Math.floor()
   } else {
@@ -498,26 +499,26 @@ Asteroid.prototype.update = function() { // 更新 这个位置的代码奇怪�
 }
 
 Asteroid.prototype.render = function() { // render 渲染函数
-  push();
-  translate(this.pos.x, this.pos.y);
-  rotate(this.angle);
-  noFill();
-  stroke(255);
+  push(); // push 是存储当前的设置，也就是说我们的这个状态是缓存过后的
+  translate(this.pos.x, this.pos.y); // translate 是绘制光标位移，把要绘制的光标进行移动
+  rotate(this.angle);  // 旋转的角度，看样子这个角度还是一个可变量
+  noFill(); // 中空禁止填充
+  stroke(255); // 绘制白色的描边
   //ellipse(0, 0, this.r*2, this.r*2);
-  beginShape();
-  for (var i = 0; i < this.sides; i++) {
+  beginShape(); // 开始绘制复杂图形的顶点
+  for (var i = 0; i < this.sides; i++) { // 所以多边形就是在这个位置绘制出来的，结果就绘制多边形出来了还特么能旋转
     var angle = map(i, 0, this.sides, 0, TWO_PI);
     var r = this.r + this.offset[i];
     var x = r * cos(angle);
     var y = r * sin(angle);
     vertex(x, y);
   }
-  endShape(CLOSE);
-  pop();
+  endShape(CLOSE); // 所以 close 是个什么东西我也不知道
+  pop(); // pop 是对当前的设置进行恢复
 }
 
-Asteroid.prototype.edges = function() {
-  if (this.pos.x > width + this.r) {
+Asteroid.prototype.edges = function() { // 翻译：边界边缘的意思
+  if (this.pos.x > width + this.r) { // 没看懂，还是得在看看
     this.pos.x = -this.r;
   } else if (this.pos.x < -this.r) {
     this.pos.x = width + this.r;
@@ -529,11 +530,11 @@ Asteroid.prototype.edges = function() {
   }
 }
 
-Asteroid.prototype.setRotation = function(angle) {
+Asteroid.prototype.setRotation = function(angle) { // 设置旋转
   this.rotation = angle;
 }
 
-Asteroid.prototype.turn = function(angle) {
+Asteroid.prototype.turn = function(angle) { // 角度增加？annyway
   this.heading += this.rotation;
 }
 </script>
