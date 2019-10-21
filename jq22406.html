@@ -163,31 +163,31 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
 
-/////// SHIP Class
+/////// SHIP Class 飞船类
 
 function Ship() {
-  this.pos = createVector(width / 2, height / 2 + 50);
-  this.vel = createVector(0, 0);
-  this.r = 10;
-  this.heading = 0;
-  this.rotation = 0;
-  this.boosting = false;
-  this.lasers = [];
-  this.shieldLevel = 100;
-  this.shieldMax = 200;
-  this.alive = true;
-  this.danger = false;
-  this.safe = true;
-  this.score = 0;
+  this.pos = createVector(width / 2, height / 2 + 50); // 手动创建一个动量
+  this.vel = createVector(0, 0); // 创建动量初始00
+  this.r = 10; // 半径
+  this.heading = 0; // 标题
+  this.rotation = 0; // 旋转
+  this.boosting = false; // 助推默认是false
+  this.lasers = []; // 激光器负数
+  this.shieldLevel = 100; // 防盾
+  this.shieldMax = 200; // 防盾最大是200
+  this.alive = true;  // 活着，在世
+  this.danger = false; // 危险
+  this.safe = true; // 安全
+  this.score = 0; // 分数
 }
 
 Ship.prototype.interface = function() {
-  textSize(14);
-  fill(255);
-  noStroke();
-  text("Score = " + this.score, 50, 50);
+  textSize(14); // 文字大小14
+  fill(255); // 绘画填充颜色是白色
+  noStroke();  // 无描边的意思
+  text("Score = " + this.score, 50, 50); // 绘图当前的分数是
   //text("Shield = " + constrain(round(ship.shieldLevel), 0, 100), 50, 65);
-  if (this.shieldLevel >= this.shieldMax) {
+  if (this.shieldLevel >= this.shieldMax) { // 给出max满级文案
     text("Shield = Max!", 50, 65);
   } else {
     text("Shield = " + constrain(round(this.shieldLevel), 0, round(this.shieldLevel)), 50, 65);
@@ -332,16 +332,16 @@ Ship.prototype.turn = function(angle) {
 }
 
 
-////// LASER
+////// LASER 激光发射器
 
 function Laser(spos, angle) {
   this.pos = createVector(spos.x, spos.y);
-  this.vel = p5.Vector.fromAngle(angle);
-  this.vel.mult(10);
+  this.vel = p5.Vector.fromAngle(angle); // 创建一个新的p5.vector（用于存储向量的数据类型）。这提供了一个二维或三维向量，特别是一个欧几里德（也称为几何）向量。向量是一个既有大小又有方向的实体。
+  this.vel.mult(10); // 从某个角度生成新的二维矢量   数字：以弧度表示的所需角度（不受角度模式影响）
   this.r = 1;
 }
 
-// collision detection for asteroids and other eventual additional stuff
+// collision detection for asteroids and other eventual additional stuff 小行星和其他最终附加物质的碰撞检测
 Laser.prototype.hits = function(target) {
   var d = dist(this.pos.x, this.pos.y, target.pos.x, target.pos.y);
   if(d < this.r + target.r){
@@ -352,11 +352,11 @@ Laser.prototype.hits = function(target) {
   }
 }
 
-Laser.prototype.update = function() {
+Laser.prototype.update = function() { // 激光器更新
   this.pos.add(this.vel);
 }
 
-Laser.prototype.render = function() {
+Laser.prototype.render = function() { // 激光器打点
   push();
   strokeWeight(2);
   stroke(255);
@@ -364,7 +364,7 @@ Laser.prototype.render = function() {
   pop();
 }
 
-Laser.prototype.offscreen = function() {
+Laser.prototype.offscreen = function() { // 是否出离屏幕
   if (this.pos.x > width + this.r || this.pos.x < -this.r || this.pos.y > height + this.r || this.pos.y < -this.r) {
     return true;
   } else {
@@ -373,23 +373,23 @@ Laser.prototype.offscreen = function() {
 }
 
 
-///// ENERGY
+///// ENERGY 能量
 
 function Energy(pos, vel) {
-  this.pos = pos.copy();
-  this.vel = vel.copy();
-  this.vel.mult(-0.2);
+  this.pos = pos.copy(); // 位置复制
+  this.vel = vel.copy(); // 冲量复制
+  this.vel.mult(-0.2); // 把矢量乘以标量。此方法的静态版本创建一个新的p5.vector，而非静态版本直接作用于该vector
   //this.vel.add(p5.Vector.random2D().mult(-0.5));
   this.r = 10;
   this.life = random(100, 300);
   this.alive = true;
 
-  this.update = function() {
-    this.pos.add(this.vel);
+  this.update = function() { // 更新代码
+    this.pos.add(this.vel); // 将X、Y和Z分量添加到向量，将一个向量添加到另一个向量，或将两个独立向量添加到一起。将两个向量相加的方法的版本是一个静态方法，返回一个p5。向量，其他的直接作用于向量。
     this.life -= 0.2;
   }
 
-  this.render = function() {
+  this.render = function() { // 能量 ⭕️, 爆炸后出小圆圈
     if (this.life > 20) {
       noFill();
       stroke(0, this.life, 0);
@@ -398,7 +398,7 @@ function Energy(pos, vel) {
   }
 }
 
-Energy.prototype.edges = function() {
+Energy.prototype.edges = function() { // 边界，边缘
   if (this.pos.x > width + this.r) {
     this.pos.x = -this.r;
   } else if (this.pos.x < -this.r) {
@@ -411,7 +411,7 @@ Energy.prototype.edges = function() {
   }
 }
 
-function generateEnergy(pos, vel) {
+function generateEnergy(pos, vel) { // 发电机能量
     energy.push(new Energy(pos, vel));
 }
 
